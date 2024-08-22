@@ -13,21 +13,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
- id String @id @default(uuid())
- username String @unique
- password String 
- email String?
- first_name String?
- last_name String?
+model user {
+  id         String   @id @default(uuid())
+  username   String   @unique
+  password   String
+  email      String?
+  first_name String?
+  last_name  String?
+
+  // Relation fields
+  reviews    Review[]  // One-to-many relationship with Review
+  comments   Comment[] // One-to-many relationship with Comment
 }
 
 model Item {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
+  id            String   @id @default(uuid())
+  name          String
+  description   String?
   averageRating Float?
-  reviews     Review[]
+  reviews       Review[]
 }
 
 model Review {
@@ -36,7 +40,7 @@ model Review {
   itemId      String
   textReview  String
   rating      Float
-  user        User     @relation(fields: [userId], references: [id])
+  user        user     @relation(fields: [userId], references: [id])  // Updated
   item        Item     @relation(fields: [itemId], references: [id])
   comments    Comment[]
   @@unique([userId, itemId]) // Ensures only one review per item per user
@@ -47,6 +51,6 @@ model Comment {
   userId      String
   reviewId    String
   textComment String
-  user        User     @relation(fields: [userId], references: [id])
+  user        user     @relation(fields: [userId], references: [id])  // Updated
   review      Review   @relation(fields: [reviewId], references: [id])
 }
