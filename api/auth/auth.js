@@ -1,26 +1,36 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const client = require('../../db')
+const { createUser } = require('../../db/users');
 
 const authRouter = express.Router();
 
-// Define the /api/auth/register route
-authRouter.post('/register', async (req, res) => {
+authRouter.post('/register', checkUserData, checkUser, async (req, res) => {
   try {
-    // Destructure username and password from req.body
     const { username, password } = req.body;
 
+    if (!username || !password) {
+      return res.status(400).send({ message: "Please provide username and password" });
+    }
+
+    // Check if user already exists
+    const oldUser = await findUserByUsername(username);
+
+    if (oldUser) {
+      return res.status(400).send({ message: "The username is already taken" });
+    }
+
     // Hash password with bcrypt
-    const saltRounds = parseInt(process.env.SALT, 10) || 7;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SALT) || 10);
 
-    // Create user in the database (add your database logic here)
-    // Example:
-    // await User.create({ username, password: hashedPassword });
+    // Create user in db
+    const user = await createUser({ username, password: hashedPassword });
 
-    // Send a success response
-    res.status(201).send({ message: 'User registered successfully' });
+    // Create a token for user ---> include id
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || "super_secret_key");
+
+    // Send response with the token
+    res.status(201).send({ token });
 
   } catch (error) {
     console.error(error); // Log error to the console
