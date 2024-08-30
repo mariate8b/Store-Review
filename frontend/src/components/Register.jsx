@@ -14,7 +14,7 @@ const Register = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
-    const handleChange = (e) => {
+    const handleChange = () => {
         const { name, value } = e.target;
         updateForm(prevForm => ({
             ...prevForm,
@@ -29,6 +29,8 @@ const Register = () => {
             setErrorMessage("Passwords do not match");
             return;
         }
+
+    
         setErrorMessage("");
         // Here you would typically handle form submission, e.g., send data to a server
         setSuccessMessage("Registration successful!");
