@@ -1,4 +1,4 @@
-import huh_face_emoji from './img/huh_face_emoji.webp';
+import huh_face_emoji from '../img/huh_face_emoji.webp';
 
 function Home (){
     return (

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import {useRegisterMutation} from '../redux/api'
 
-const Register = () => {
+const Register = (setToken) => {
     const initialForm = {
         username: "",
         password: "",
@@ -13,6 +14,7 @@ const Register = () => {
     const [form, updateForm] = useState(initialForm);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const [register] = useRegisterMutation();
 
     const handleChange = () => {
         const { name, value } = e.target;
@@ -25,15 +27,21 @@ const Register = () => {
     const submitHandler = (e) => {
         e.preventDefault();
         // Example validation (simple check)
-        if (form.password !== form.conPassword) {
+        if (form.username === "" || form.password === "") {
             setErrorMessage("Passwords do not match");
             return;
         }
+
+        const {data, error} = register(form);
+
+        
 
     
         setErrorMessage("");
         // Here you would typically handle form submission, e.g., send data to a server
         setSuccessMessage("Registration successful!");
+
+        setToken(data.token);
     };
 
     const { username, password, first_name, last_name, email, conPassword } = form;

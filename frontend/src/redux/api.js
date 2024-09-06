@@ -1,8 +1,17 @@
-import {createApi, fakeBaseQuery, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-export const api = createApi ({
-    reducePath: "api",
-    baseQuery: fetchBaseQuery({
-        baseUrl:
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+export const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  endpoints: (builder) => ({
+    register: builder.mutation({
+      query: (newUser) => ({
+        url: '/register',
+        method: 'POST',
+        body: newUser,
+      }),
     }),
+  }),
 });
+
+export const { useRegisterMutation } = api;

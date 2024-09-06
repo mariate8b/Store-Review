@@ -1,7 +1,7 @@
 import {  NavLink} from 'react-router-dom';
 
-function NavBar() {
-  
+function NavBar({token}) {
+  console.log('Navbar token',token)
 
     return (
      <nav>
