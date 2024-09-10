@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import {useRegisterMutation} from '../redux/api'
+import { useRegisterMutation } from '../redux/api';
 
-const Register = (setToken) => {
+const Register = ({ setToken }) => {
     const initialForm = {
         username: "",
         password: "",
@@ -16,7 +16,7 @@ const Register = (setToken) => {
     const [successMessage, setSuccessMessage] = useState("");
     const [register] = useRegisterMutation();
 
-    const handleChange = () => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
         updateForm(prevForm => ({
             ...prevForm,
@@ -24,24 +24,28 @@ const Register = (setToken) => {
         }));
     };
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
-        // Example validation (simple check)
-        if (form.username === "" || form.password === "") {
+        if (form.password !== form.conPassword) {
             setErrorMessage("Passwords do not match");
             return;
         }
 
-        const {data, error} = register(form);
-
-        
-
-    
-        setErrorMessage("");
-        // Here you would typically handle form submission, e.g., send data to a server
-        setSuccessMessage("Registration successful!");
-
-        setToken(data.token);
+        try {
+            // Destructure the response if necessary
+            const response = await register(form).unwrap();
+            if (response && response.token) {
+                setSuccessMessage("Registration successful!");
+                setErrorMessage("");
+                setToken(response.token);
+            } else {
+                setErrorMessage("Registration failed: No token received");
+            }
+        } catch (error) {
+            console.error('Registration error:', error); // Log error for debugging
+            setErrorMessage(error.data?.message || "Registration failed");
+            setSuccessMessage("");
+        }
     };
 
     const { username, password, first_name, last_name, email, conPassword } = form;
@@ -107,3 +111,4 @@ const Register = (setToken) => {
 };
 
 export default Register;
+

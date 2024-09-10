@@ -1,0 +1,35 @@
+{
+  "name": "store-review",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "seed": "node prisma/seed",
+    "start": "node index.js",
+    "start:dev": "node index.js.js",
+     "test": "jes --runInBand"
+    
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+
+  "dependencies": {
+    "@prisma/client": "^5.17.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.4",
+    "prisma": "^5.17.0"
+  },
+
+  "description": "",
+  "devDependencies": {
+    "@faker-js/faker": "8.4.1",
+    "jest": "29.7.0",
+    "supertest": "7.0.0"
+  }
+}
+  
+
