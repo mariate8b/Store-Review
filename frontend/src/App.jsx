@@ -4,7 +4,10 @@ import Home from './components/Home';
 import NavBar from './components/NavBar';
 import Register from './components/Register';
 import Login from './components/Login';
-import Review from './components/Review'; 
+import Review from './components/Review';
+import Destination from './components/Destination';
+
+
 import './App.css';
 
 function App() {
@@ -18,6 +21,8 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/review" element={<Review />} />
+        <Route path="/destination" element={<Destination />} />
+        <Route path="/destination/:id" element={<Destination />} />
         <Route path="/register" element={<Register setToken={setToken} />} />
       </Routes>
     </div>

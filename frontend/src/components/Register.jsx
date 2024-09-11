@@ -26,10 +26,11 @@ const Register = ({ setToken }) => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        if (form.password !== form.conPassword) {
-            setErrorMessage("Passwords do not match");
-            return;
-        }
+        
+if (!username || !password || !email) {
+    setErrorMessage("Please fill in all required fields");
+    return;
+}
 
         try {
             // Destructure the response if necessary
@@ -42,8 +43,10 @@ const Register = ({ setToken }) => {
                 setErrorMessage("Registration failed: No token received");
             }
         } catch (error) {
-            console.error('Registration error:', error); // Log error for debugging
-            setErrorMessage(error.data?.message || "Registration failed");
+            console.error('Registration error:', error); // Log the entire error
+            // Check if the error has a response and a message
+            const errorMsg = error.data?.message || error.message || "Registration failed";
+            setErrorMessage(errorMsg);
             setSuccessMessage("");
         }
     };

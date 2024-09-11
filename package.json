@@ -6,24 +6,25 @@
     "seed": "node prisma/seed",
     "start": "node index.js",
     "start:dev": "node index.js.js",
-     "test": "jes --runInBand"
-    
+    "test": "jes --runInBand"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-
   "dependencies": {
-    "@prisma/client": "^5.17.0",
+    "@prisma/client": "^5.19.1",
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.4",
-    "prisma": "^5.17.0"
+    "prisma": "^5.19.1",
+    "react-router-dom": "^6.26.2"
   },
-
   "description": "",
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
@@ -31,5 +32,3 @@
     "supertest": "7.0.0"
   }
 }
-  
-
