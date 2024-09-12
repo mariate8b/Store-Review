@@ -1,67 +1,44 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useLoginMutation } from '../redux/api';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
-    const navigate = useNavigate();
+const Login = ({ setToken }) => {
+  const [login, { isLoading, error }] = useLoginMutation();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name === 'email') {
-            setEmail(value);
-        } else if (name === 'password') {
-            setPassword(value);
-        }
-    };
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await login({ username, password }).unwrap();
+      localStorage.setItem('token', response.token);
+      setToken(response.token);
+      navigate('/add-destination'); // Redirect to AddDestination after login
+    } catch (err) {
+      console.error('Login failed:', err);
+    }
+  };
 
-    const submitHandler = (e) => {
-        e.preventDefault(); // Stop page reload
-
-        if (!email || !password) {
-            setErrorMessage("All fields are required!");
-            setSuccessMessage('');
-        } else {
-            setErrorMessage('');
-            setSuccessMessage("You've successfully logged in");
-            navigate('/home');
-            console.log(email);
-            console.log(password);
-        }
-    };
-
-    return (
-        <>
-            <form onSubmit={submitHandler} id="formReg">
-                <h1>Sign In</h1>
-                <label>Email:</label>
-                <input
-                    type="email"
-                    name="email"
-                    onChange={handleChange}
-                    value={email}
-                />
-                <br />
-                <label>Password:</label>
-                <input
-                    type="password"
-                    name="password"
-                    onChange={handleChange}
-                    value={password}
-                />
-                <br />
-                <button type="submit">Submit</button>
-                {errorMessage && <p className="error">{errorMessage}</p>}
-                {successMessage && <p className="success">{successMessage}</p>}
-            </form>
-            <div>
-                <h5><Link to="/register">Sign Up</Link></h5>
-            </div>
-        </>
-    );
-}
+  return (
+    <form onSubmit={handleLogin}>
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button type="submit" disabled={isLoading}>Login</button>
+      {error && <p>Error: {error.message}</p>}
+    </form>
+  );
+};
 
 export default Login;
+

@@ -1,94 +1,70 @@
 const { PrismaClient } = require('@prisma/client');
-const { faker } = require('@faker-js/faker');
+const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
-const main = async () => {
-  // Seed Users
-  console.log("Creating users...");
-  const [user1, user2, user3] = await Promise.all(
-    [...Array(3)].map(() => 
-      prisma.user.create({
-        data: {
-          username: faker.internet.userName(),
-          password: faker.internet.password(),
-          email: faker.internet.email(),
-          first_name: faker.person.firstName(),
-          last_name: faker.person.lastName(),
-        },
-      })
-    )
-  );
-  
-  console.log("Users created:", [user1, user2, user3]);
-
-  // Seed Items
-  console.log("Creating items...");
-  const items = await Promise.all(
-    [...Array(5)].map(() => 
-      prisma.item.create({
-        data: {
-          name: faker.commerce.productName(),
-          description: faker.commerce.productDescription(),
-        },
-      })
-    )
-  );
-  
-  console.log("Items created:", items.length);
-
-  // Seed Reviews
-  console.log("Creating reviews...");
-  const reviews = [];
-  const usedCombinations = new Set();
-
-  for (let i = 0; i < 20; i++) {
-    let userId, itemId;
-    do {
-      userId = [user1, user2, user3][Math.floor(Math.random() * 3)].id;
-      itemId = items[Math.floor(Math.random() * items.length)].id;
-    } while (usedCombinations.has(`${userId}-${itemId}`));
-
-    usedCombinations.add(`${userId}-${itemId}`);
-    
-    const review = await prisma.review.create({
+const seed = async () => {
+  try {
+    // Create destinations
+    const destination1 = await prisma.destination.create({
       data: {
-        userId,
-        itemId,
-        textReview: faker.lorem.sentences(2),
-        rating: faker.number.float({ min: 1, max: 5, precision: 0.1 }),
+        name: 'Antigua, Guatemala', // Updated field name
+        picture: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Santa_Catalina_Arch_-_Antigua_Guatemala_Feb_2020.jpg/640px-Santa_Catalina_Arch_-_Antigua_Guatemala_Feb_2020.jpg',
+        review: 'Antigua Guatemala is known as the best-preserved Spanish colonial city in Central America. Stroll the cobblestone streets, lounge with the locals in Central Park on sunny afternoons or hike up one of the volcanoes overlooking the city for amazing views.',
       },
     });
-    reviews.push(review);
+
+    const destination2 = await prisma.destination.create({
+      data: {
+        name: 'Bogota, Colombia', // Updated field name
+        picture: 'https://imageio.forbes.com/specials-images/imageserve/1182337590/Bogota-Colombia-skyline/960x0.jpg?format=jpg&width=960',
+        review: 'Ten million people call vibrant, passionate, sprawling Bogota home. The energy of this metropolitan heart of Colombia is in part fueled by its hundreds of eclectic and authentic dining hot spots, fantastic wines, and frequent foodie festivals.',
+      },
+    });
+
+    const destination3 = await prisma.destination.create({
+      data: {
+        name: 'Bacalar, Mexico', // Updated field name
+        picture: 'https://img1.wsimg.com/isteam/ip/9b20b38a-b428-4bc2-ae85-6791e0107df8/223611D0-FFFE-487D-AFFB-2AAA39D2340A.JPG/:/cr=t:3.33%25,l:0%25,w:100%25,h:80.7%25',
+        review: 'Located near the Mexico-Belize border, a true paradise awaits travelers in Bacalar. The town sits on the Lagoon of Seven Colors, a lake nicknamed for its beautifully colored water, which makes it the perfect place for stunning sunsets, fresh seafood, and cenote swimming.',
+      },
+    });
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { username: 'john_doe' }
+    });
+
+    // Create user only if it doesn't exist
+    const user1 = existingUser || await prisma.user.create({
+      data: {
+        username: 'john_doe',
+        password: await bcrypt.hash('password123', 10),
+      },
+    });
+
+    // Create reviews
+    await prisma.review.create({
+      data: {
+        destinationId: destination1.id,
+        review: "It was a great place I loved being with my family at the beach. People were really welcoming, but I did not like how expensive it was.",
+        rating: 5,
+        picture: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/b0/18/73/villa-del-mar-hotel.jpg?w=700&h=-1&s=1',
+        userId: user1.id
+      },
+    });
+
+    console.log('Seeding completed!');
+  } catch (error) {
+    console.error('Error seeding data:', error);
+  } finally {
+    await prisma.$disconnect();
   }
-  
-  console.log("Reviews created:", reviews.length);
-
-  // Seed Comments
-  console.log("Creating comments...");
-  await Promise.all(
-    [...Array(30)].map(() => 
-      prisma.comment.create({
-        data: {
-          userId: [user1, user2, user3][Math.floor(Math.random() * 3)].id,
-          reviewId: reviews[Math.floor(Math.random() * reviews.length)].id,
-          textComment: faker.lorem.sentence(),
-        },
-      })
-    )
-  );
-  
-  console.log("Comments created: 30");
-
-  console.log('Seeding completed successfully!');
 };
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+seed();
+
+
+
+
+
 

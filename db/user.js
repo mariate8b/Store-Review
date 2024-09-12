@@ -1,4 +1,4 @@
-const prisma = require('./index')
+const prisma = require('../api/index')
 
 const creareUser = (userData) => {
     return prisma.users.create({
@@ -6,10 +6,10 @@ const creareUser = (userData) => {
     });
 
 };
-const findUserByUsername = (username) =>{
+const getUserByUsername = (username) =>{
     return prisma.users.findUnique({
         where: {username}
     })
 }
 
-module.exports = {createUser, findUserByUsername};
+module.exports = {createUser, getUserByUsername};

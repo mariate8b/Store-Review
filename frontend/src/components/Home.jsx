@@ -1,41 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useGetDestinationsQuery } from '../redux/api'; // Assuming you have this query set up
 import { Link } from 'react-router-dom';
 
 const Home = () => {
-  const [reviews, setReviews] = useState([]);
+  const { data: destinations = [], isLoading, error } = useGetDestinationsQuery();
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/reviews');
-        setReviews(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchReviews();
-  }, []);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading data: {error.message}</p>; // Display error message if there is one
 
-  const token = localStorage.getItem('token');
+  // Debugging: Check what destinations data looks like
+  console.log('Destinations:', destinations);
 
   return (
     <div>
-      <h1>Reviews</h1>
-      {reviews.length === 0 ? (
-        <p>No reviews available</p>
+      <h1>Destinations</h1>
+      {destinations.length === 0 ? (
+        <p>No destinations available.</p>
       ) : (
-        reviews.map(review => (
-          <div key={review.id}>
-            <h2>{review.destination.name}</h2>
-            <p>{review.comment}</p>
-            <p>Rating: {review.rating} ⭐</p>
+        destinations.map(destination => (
+          <div key={destination.id} style={{ marginBottom: '20px' }}>
+            <h2>{destination.name}</h2> {/* Change to 'name' to match your seeded data */}
+            <img 
+              src={destination.picture} 
+              alt={destination.name} 
+              style={{ width: '300px', height: '200px' }} 
+            />
+            <p>{destination.review}</p>
+            <Link to={`/destination/${destination.id}`}>See Reviews</Link>
           </div>
         ))
       )}
-      {!token && <p>Please <Link to="/register">register</Link> or <Link to="/login">login</Link> to add a review.</p>}
-      {token && <Link to="/add-review">Add a Review</Link>}
     </div>
   );
 };
 
 export default Home;
+
+
+

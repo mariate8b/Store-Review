@@ -1,21 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const { PrismaClient } = require('@prisma/client');
+const { blueBright } = require('chalk');
+const PORT = process.env.PORT || 3000;
+const app = require('./api');
+const db = require('./db');
 
-const prisma = new PrismaClient();
-const app = express();
-const PORT = process.env.PORT || 3000; // Set to 3000
 
-app.use(cors());
-app.use(bodyParser.json());
+const init = async () => {
+  try {
+    await db.$connect(); // Connect to the database
+    app.listen(PORT, () => {
+      console.log(blueBright(`Listening at http://localhost:${PORT}`));
+    });
+  } catch (error) {
+    console.error('Error initializing the server:', error);
+  }
+};
 
-// Define your routes here
-app.get('/', (req, res) => {
-  res.send('Hello, world!');
-});
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+init();

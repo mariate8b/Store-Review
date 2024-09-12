@@ -4,14 +4,15 @@ import Home from './components/Home';
 import NavBar from './components/NavBar';
 import Register from './components/Register';
 import Login from './components/Login';
-import Review from './components/Review';
-import Destination from './components/Destination';
+import Logout from './components/Logout'; 
+import DestinationsList from './components/DestinationsList';
+
 
 
 import './App.css';
 
 function App() {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
 
   return (
     <div>
@@ -19,11 +20,11 @@ function App() {
 
       <Routes>
         <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/review" element={<Review />} />
-        <Route path="/destination" element={<Destination />} />
-        <Route path="/destination/:id" element={<Destination />} />
+        <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/register" element={<Register setToken={setToken} />} />
+        <Route path="/logout" element={<Logout setToken={setToken} />} />
+        <Route path="/destinations" element={<DestinationsList />} />
+       
       </Routes>
     </div>
   );

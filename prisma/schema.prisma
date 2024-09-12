@@ -1,56 +1,49 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id         String   @id @default(uuid())
-  username   String   @unique
-  password   String
-  email      String?
-  first_name String?
-  last_name  String?
-
-  // Relation fields
-  reviews    Review[]  // One-to-many relationship with Review
-  comments   Comment[] // One-to-many relationship with Comment
+generator client {
+  provider = "prisma-client-js"
 }
 
-model Item {
-  id            String   @id @default(uuid())
-  name          String
-  description   String?
-  averageRating Float?
-  reviews       Review[]
-}
-
-model Review {
-  id          String   @id @default(uuid())
-  userId      String
-  itemId      String
-  textReview  String
-  rating      Float
-  user        user     @relation(fields: [userId], references: [id])  // Updated
-  item        Item     @relation(fields: [itemId], references: [id])
+model Destination {
+  id          Int      @id @default(autoincrement())
+  name        String
+  picture     String
+  review      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   comments    Comment[]
-  @@unique([userId, itemId]) // Ensures only one review per item per user
+  reviews     Review[]
 }
 
 model Comment {
-  id          String   @id @default(uuid())
-  userId      String
-  reviewId    String
-  textComment String
-  user        user     @relation(fields: [userId], references: [id])  // Updated
-  review      Review   @relation(fields: [reviewId], references: [id])
+  id            Int      @id @default(autoincrement())
+  destinationId Int
+  comment       String
+  name          String
+  userId        Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  destination   Destination @relation(fields: [destinationId], references: [id])
 }
+
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+  reviews  Review[]
+}
+
+model Review {
+  id             Int       @id @default(autoincrement())
+  destinationId  Int
+  review         String
+  rating         Int
+  picture        String
+  userId         Int
+  destination    Destination @relation(fields: [destinationId], references: [id])
+  user           User        @relation(fields: [userId], references: [id])
+}
+

@@ -1,19 +1,29 @@
-import {  NavLink} from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-function NavBar({token}) {
-  console.log('Navbar token',token)
+const NavBar = ({ token }) => (
+  <nav>
+    <Link to="/home">Home</Link>
+    {token ? (
+      <>
+        
+        <Link to="/destinationslist">Destinations List</Link>
+        <button onClick={() => {
+          localStorage.removeItem('token');
+          window.location.href = '/home'; // Force reload to clear state
+        }}>Logout</button>
+      </>
+    ) : (
+      <>
+        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
+      </>
+    )}
+  </nav>
+);
 
-    return (
-     <nav>
-        <NavLink to="/home">Home</NavLink>
-        <NavLink to="/register">Register</NavLink>
-        <NavLink to="/login">Login</NavLink> 
-        <NavLink to ="/reviews"></NavLink> 
-     </nav>
-    )
-  }
-  
-  export default NavBar;
-  
+export default NavBar;
+
+
 
   
