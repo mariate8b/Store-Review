@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useGetDestinationsQuery, useAddCommentMutation } from '../redux/api';
 
 const DestinationsList = () => {
+ 
   const { data: destinations = [], error, isLoading } = useGetDestinationsQuery();
   const [selectedDestinationId, setSelectedDestinationId] = useState(null);
   const [comment, setComment] = useState('');

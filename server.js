@@ -1,24 +1,30 @@
+// server.js
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { PrismaClient } = require('@prisma/client');
 require('dotenv').config();
-console.log('DATABASE_URL:', process.env.DATABASE_URL);
 
 const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
-// Configure CORS
-app.use(cors({
-  origin: 'http://localhost:5173', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
+
+// Middleware to check token
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.sendStatus(401);
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
 
 // Register endpoint
 app.post('/api/register', async (req, res) => {
@@ -26,20 +32,17 @@ app.post('/api/register', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: {
-        username,
-        password: hashedPassword,
-      },
+      data: { username, password: hashedPassword },
     });
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
     res.status(201).json({ token, userId: user.id });
   } catch (error) {
-    console.error('Error registering user:', error); // Add this line for better error visibility
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
 // Login endpoint
+// Backend (Express) - Login endpoint
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -54,61 +57,14 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// Middleware to check token
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (token == null) return res.sendStatus(401);
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-};
-// Create destination endpoint
-app.post('/api/destination', authenticateToken, async (req, res) => {
-  const { destination, review, picture } = req.body;
-  try {
-    const newDestination = await prisma.destination.create({
-      data: {
-        destination,
-        review,
-        picture,
-        userId: req.user.userId,
-      },
-    });
-    
-    res.status(201).json(newDestination);
-  } catch (error) {
-    console.error('Error creating destination:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-// Fetch all destinations with comments
-app.get('/api/destinations', async (req, res) => {
-  try {
-    const destinations = await prisma.destination.findMany();
-    res.json(destinations);
-  } catch (error) {
-    console.error('Error fetching destinations:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
-
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
-});
-
 
 // Create review endpoint
 app.post('/api/reviews', authenticateToken, async (req, res) => {
-  const { destination, review, picture } = req.body;
+  const { destinationId, review, picture } = req.body;
   try {
     const reviewData = await prisma.review.create({
       data: {
-        destination,
+        destinationId,
         review,
         picture,
         userId: req.user.userId,
@@ -124,30 +80,28 @@ app.post('/api/reviews', authenticateToken, async (req, res) => {
 app.get('/api/reviews', async (req, res) => {
   try {
     const reviews = await prisma.review.findMany({
-      include: { 
-        user: true,
-        destination: true // Ensure destination is included
-      },
+      include: { user: true, destination: true },
     });
     res.json(reviews);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-// Create comment endpoint
-app.post('/api/comments', authenticateToken, async (req, res) => {
-  const { destinationId, comment } = req.body;
+// Backend (Express) - Ensure you have an endpoint for adding comments
+app.post('/api/reviews/:reviewId/comments', authenticateToken, async (req, res) => {
+  const { reviewId } = req.params;
+  const { comment } = req.body;
+
   try {
     const newComment = await prisma.comment.create({
       data: {
+        reviewId,
         comment,
-        destinationId,
         userId: req.user.userId,
       },
     });
     res.status(201).json(newComment);
   } catch (error) {
-    console.error('Error creating comment:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -159,4 +113,5 @@ app.post('/api/logout', (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
