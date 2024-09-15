@@ -9,9 +9,14 @@ require('dotenv').config();
 const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'Sanjosetere9803*';
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({
+  origin: 'http://localhost:5173', // Adjust this URL if needed
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 app.use(express.json());
 
 // Middleware to check token
@@ -40,6 +45,16 @@ app.post('/api/register', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+app.get('/api/destinations', async (req, res) => {
+  try {
+    const destinations = await prisma.destination.findMany();
+    res.status(200).json(destinations);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching destinations' });
+  } finally {
+    await prisma.$disconnect();
+  }
+});
 
 // Login endpoint
 // Backend (Express) - Login endpoint
@@ -47,15 +62,25 @@ app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await prisma.user.findUnique({ where: { username } });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user) {
+      console.error(`User not found: ${username}`);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      console.error(`Password mismatch for user: ${username}`);
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
     res.json({ token, userId: user.id });
   } catch (error) {
+    console.error('Login failed:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 // Create review endpoint

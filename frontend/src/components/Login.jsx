@@ -4,7 +4,7 @@ import { useLoginMutation } from '../redux/api';
 import { useNavigate } from 'react-router-dom';
 
 const Login = ({ setToken }) => {
-  const [login, { isLoading, error }] = useLoginMutation(); // Add isLoading and error
+  const [login, { isLoading, error }] = useLoginMutation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Login = ({ setToken }) => {
       const response = await login({ username, password }).unwrap();
       localStorage.setItem('token', response.token);
       setToken(response.token);
-      navigate('/add-destination'); // Redirect after login
+      navigate('destinations');
     } catch (err) {
       console.error('Login failed:', err);
     }
@@ -44,5 +44,8 @@ const Login = ({ setToken }) => {
 };
 
 export default Login;
+
+
+
 
 

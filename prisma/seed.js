@@ -1,6 +1,7 @@
 // prisma/seed.js
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const bcrypt = require('bcrypt');
 
 const main = async () => {
   // Create sample destinations
@@ -12,13 +13,15 @@ const main = async () => {
     },
   });
 
-  // Create sample users
-  const user = await prisma.user.create({
-    data: {
-      username: 'sampleuser',
-      password: 'password', // Consider hashing this in a real scenario
-    },
-  });
+  // Example user creation with hashed password
+const hashedPassword = await bcrypt.hash('plainPassword', 10);
+const user = await prisma.user.create({
+  data: {
+    username: 'sampleuser',
+    password: hashedPassword,
+  },
+});
+
 
   // Create sample reviews
   await prisma.review.create({
@@ -27,6 +30,7 @@ const main = async () => {
       review: 'Amazing place!',
       picture: 'https://someurl.com/review.jpg',
       userId: user.id,
+      rating: 5,
     },
   });
 

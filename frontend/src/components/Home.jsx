@@ -1,4 +1,7 @@
 // components/Home.jsx
+
+//NOTES IMPORTANT //
+// thedestination destination is already fetching , it needs unique locations with rating for none users with the option of r
 import React from 'react';
 import { useGetDestinationsQuery } from '../redux/api';
 
@@ -19,6 +22,7 @@ const Home = () => {
             <h2>{destination.name}</h2>
             <img src={destination.picture} alt={destination.name} style={{ width: '300px', height: '200px' }} />
             <p>{destination.review}</p>
+            <button>Write a Comment</button>
           </div>
         ))
       )}
@@ -27,6 +31,7 @@ const Home = () => {
 };
 
 export default Home;
+
 
 
 
