@@ -1,4 +1,3 @@
-// redux/api.js
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // Create the API slice
@@ -20,10 +19,10 @@ export const api = createApi({
       }),
     }),
     addComment: builder.mutation({
-      query: ({ reviewId, comment }) => ({
-        url: `reviews/${reviewId}/comments`,
+      query: ({ destinationId, comment, name }) => ({
+        url: `destinations/${destinationId}/comments`,
         method: 'POST',
-        body: comment,
+        body: { comment, name },
       }),
     }),
     register: builder.mutation({
@@ -34,17 +33,19 @@ export const api = createApi({
       }),
     }),
     login: builder.mutation({
-        query: (credentials) => ({
-          url: 'login',
-          method: 'POST',
-          body: credentials,
-        }),
+      query: (credentials) => ({
+        url: 'login',
+        method: 'POST',
+        body: credentials,
       }),
+    }),
   }),
 });
 
 // Export hooks for endpoints
 export const { useGetDestinationsQuery, useGetDestinationByIdQuery, useAddReviewMutation, useAddCommentMutation, useRegisterMutation, useLoginMutation } = api;
+
+
 
 
 

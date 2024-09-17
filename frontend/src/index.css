@@ -4,8 +4,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #3B3030;
+  background-color: white;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,11 +15,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #3B3030;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #185519;
 }
 
 body {
@@ -33,7 +33,138 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  color: #3B3030;
 }
+.DropItName{
+margin-left: 200px;
+font-size: 50px;
+}
+/*Nav dropwon Manu*/
+/* NavBar.css */
+
+/* Style for the entire nav element */
+nav {
+  display: flex;
+  align-items: center;
+  padding: px;
+  background-color: white; /* Transparent background */
+  color: black; /* Change text color to black */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Ensures the navbar is above other content */
+  border-bottom: 1px solid #ddd; /* Optional: Add a border for better separation */
+}
+
+/* Style for links inside the nav */
+nav a {
+  color: black; /* Change link color to black */
+  text-decoration: none;
+  padding: 10px;
+  margin-left: 100px;
+
+}
+.logo {
+  width: 70px; /* Set width */
+  height: 70px; /* Set height to be equal to width */
+  object-fit: cover; /* Ensure the image covers the square area without distortion */
+  
+}
+
+/* Style for link hover effect */
+nav a:hover {
+  background-color: #f0f0f0; /* Light background on hover */
+  color: black; /* Ensure text color remains black on hover */
+}
+
+/* Style for the search form */
+.search-form {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+ 
+}
+
+/* Style for the search input */
+.search-input {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ddd; /* Add border to the input */
+  border-radius: 4px; /* Rounded corners */
+}
+
+/* Style for the search button */
+.search-button {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ddd; /* Add border to the button */
+  border-radius: 4px; /* Rounded corners */
+  background-color: #f0f0f0; /* Light background */
+  cursor: pointer;
+}
+
+/* Dropdown styles */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  background-color: transparent; /* Transparent background for button */
+  color: black; /* Button text color */
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white; /* White background for dropdown */
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border: 1px solid #ddd; /* Optional: Add a border to dropdown items */
+}
+
+.dropdown-content a, .dropdown-content button {
+  color: black; /* Text color for dropdown items */
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover, .dropdown-content button:hover {
+  background-color: #f1f1f1; /* Light background on hover */
+}
+
+.dropdown .show {
+  display: block;
+}
+
+/* Style for logout button */
+.logout-button {
+  background: none;
+  border: none;
+  color: black;
+  cursor: pointer;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.logout-button:hover {
+  background-color: #f1f1f1;
+}
+
+/* Add padding to the top of the content to prevent overlap with the fixed navbar */
+body {
+  padding-top: 60px; /* Adjust based on the height of your navbar */
+}
+/*Menu ends here*/
+
+
 
 button {
   border-radius: 8px;
@@ -42,16 +173,24 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #000000;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #000000;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+input{
+  background-color: whitesmoke;
+  color: #000000;
+}
+text{
+  color: #000000;
 }
 
 @media (prefers-color-scheme: light) {
@@ -135,5 +274,308 @@ h1 {
 
 .rating>input:checked~label:hover~label {
   color: #f9ff80;
+}
+
+/*Drop it form*/
+/* DropIt.css */
+
+/* Container Styling */
+.Dropitform {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Header Styling */
+.Dropitform h1 {
+  text-align: center;
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Form Styling */
+.Dropitform form {
+  display: flex;
+  flex-direction: column;
+}
+
+.Dropitform label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+}
+
+.Dropitform input[type="text"],
+.Dropitform textarea,
+.Dropitform input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+.Dropitform input[type="text"]::placeholder,
+.Dropitform textarea::placeholder {
+  color: #000000;
+}
+
+.Dropitform textarea {
+  resize: vertical;
+  height: 150px;
+}
+
+.Dropitform button {
+  padding: 12px;
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  font-family: 'Arial', sans-serif;
+}
+
+.Dropitform button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.Dropitform button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.Dropitform ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.Dropitform li {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.Dropitform li:hover {
+  background-color: #f0f0f0;
+}
+
+.Dropitform p {
+  color: #d9534f;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
+}
+
+/*MyAccount*/
+
+/* MyAccount.css */
+
+/* Container Styling */
+.MyAccount {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Header Styling */
+.MyAccount h1 {
+  text-align: center;
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+
+
+
+
+/* Container Styling */
+.MyAccount {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Header Styling */
+.MyAccount h1 {
+  text-align: center;
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 10px; /* Reduced margin to bring the nav closer */
+  font-family: 'Arial', sans-serif;
+}
+
+/* Navigation Styling */
+.MyAccount nav {
+  margin-top: 200px; /* Reduced margin to bring the menu closer to the header */
+  margin-left: 50px;
+}
+
+.MyAccount ul {
+  list-style: none; /* Removes default bullet points */
+  padding: 0;
+  margin: 0;
+}
+
+.MyAccount li {
+  margin-bottom: 12px; /* Space between each link */
+}
+
+.MyAccount a {
+  display: block; /* Ensures the entire area of the link is clickable */
+  padding: 12px;
+  text-decoration: none;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Arial', sans-serif;
+}
+
+.MyAccount a:hover {
+  background-color: #f0f0f0;
+  color: #000000;
+}
+
+/* Optional: Active Link Styling */
+.MyAccount a.active {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+/*Destination Home*/
+.destinationsHome{
+  margin-top: 100px;
+}
+
+.DestinationList{
+  margin-top: 100px;
+}
+
+/* Login.css */
+
+/* Styling for the form container */
+.login-form {
+  max-width: 400px;
+  margin: 50px auto; /* Center the form horizontally and add vertical margin */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Style for input fields */
+.login-form input {
+  width: 100%; /* Full width of the form */
+  padding: 12px;
+  margin-bottom: 15px; /* Space between inputs */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+/* Style for the submit button */
+./* Login.css */
+
+/* Styling for the form container */
+.login-form {
+  max-width: 400px;
+  margin: 50px auto; /* Center the form horizontally and add vertical margin */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Style for input fields */
+.login-form input {
+  width: 100%; /* Full width of the form */
+  padding: 12px;
+  margin-bottom: 15px; /* Space between inputs */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+/* Style for the submit button */
+/* Login.css */
+
+/* Basic styling for the form container with background image */
+
+
+.Login-form {
+  max-width: 400px;
+  margin: 0 auto; /* Center horizontally */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+}
+
+/* Style for input fields */
+.login-form input {
+  width: 100%; /* Full width of the form */
+  padding: 12px;
+  margin-bottom: 15px; /* Space between inputs */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+/* Style for the submit button */
+.Login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #000000; /* Primary color */
+  color: #ffffff; /* Text color */
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+
+.login-form button:disabled {
+  background-color: #ccc; /* Light grey for disabled state */
+  cursor: not-allowed; /* Change cursor to indicate button is not clickable */
+}
+
+/* Style for error messages */
+.error-message {
+  color: #ff4d4d; /* Red color for errors */
+  font-size: 14px;
+  text-align: center; /* Center-align error message */
+  margin-top: 10px; /* Space above the error message */
 }
 

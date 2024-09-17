@@ -12,7 +12,7 @@ const Home = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div>
+    <div className = "destinationsHome">
       <h1>Destinations</h1>
       {destinations.length === 0 ? (
         <p>No destinations available.</p>
@@ -22,7 +22,7 @@ const Home = () => {
             <h2>{destination.name}</h2>
             <img src={destination.picture} alt={destination.name} style={{ width: '300px', height: '200px' }} />
             <p>{destination.review}</p>
-            <button>Write a Comment</button>
+            <button>See comments</button>
           </div>
         ))
       )}

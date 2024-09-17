@@ -83,6 +83,30 @@ app.post('/api/login', async (req, res) => {
 
 
 
+// Ensure you have the correct route for adding comments
+app.post('/api/destinations/:destinationId/comments', authenticateToken, async (req, res) => {
+  const { destinationId } = req.params;
+  const { comment, name } = req.body;
+
+  try {
+    const newComment = await prisma.comment.create({
+      data: {
+        destinationId: parseInt(destinationId), // Ensure destinationId is an integer
+        comment,
+        name,
+      },
+    });
+    res.status(201).json(newComment);
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
 // Create review endpoint
 app.post('/api/reviews', authenticateToken, async (req, res) => {
   const { destinationId, review, picture } = req.body;

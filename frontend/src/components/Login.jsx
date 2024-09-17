@@ -22,7 +22,8 @@ const Login = ({ setToken }) => {
   };
 
   return (
-    <form onSubmit={handleLogin}>
+   
+    <form className = "Login-form" onSubmit={handleLogin}>
       <input
         type="text"
         placeholder="Username"
@@ -35,11 +36,12 @@ const Login = ({ setToken }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button type="submit" disabled={isLoading}>
+      <button className= "Login-button" type="submit" disabled={isLoading}>
         {isLoading ? 'Logging in...' : 'Login'}
-      </button>
+      </button >
       {error && <p>Error: {error.message}</p>}
-    </form>
+    </form> 
+   
   );
 };
 

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useGetDestinationsQuery, useAddCommentMutation } from '../redux/api';
 
 const DestinationsList = () => {
- 
   const { data: destinations = [], error, isLoading } = useGetDestinationsQuery();
   const [selectedDestinationId, setSelectedDestinationId] = useState(null);
   const [comment, setComment] = useState('');
@@ -25,6 +24,7 @@ const DestinationsList = () => {
       setSelectedDestinationId(null);
     } catch (error) {
       console.error('Failed to add comment:', error);
+      alert('Failed to add comment. Please try again.');
     }
   };
 
@@ -32,23 +32,19 @@ const DestinationsList = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div>
+    <div className = "DestinationList">
       <h1>Destinations List</h1>
       {destinations.map((destination) => (
         <div key={destination.id} style={{ marginBottom: '20px' }}>
+          
           <h2>{destination.name}</h2>
-          <img src={destination.picture} alt={destination.name} style={{ width: '300px', height: '200px' }} />
+          {destination.picture && <img src={destination.picture} alt={destination.name} style={{ width: '300px', height: '200px' }} />}
           <p>{destination.review}</p>
 
-          {/* Display existing comments */}
+          
           <div>
             <h3>Comments:</h3>
-            {destination.comments && destination.comments.map((comment) => (
-              <div key={comment.id} style={{ marginBottom: '10px' }}>
-                <p>{comment.comment}</p>
-                <p><strong>{comment.name}</strong></p>
-              </div>
-            ))}
+            
           </div>
 
           {/* Comment Input */}
@@ -76,7 +72,7 @@ const DestinationsList = () => {
           )}
 
           <button onClick={() => setSelectedDestinationId(destination.id)}>
-            {selectedDestinationId === destination.id ? 'Cancel' : 'Add Comment'}
+            {selectedDestinationId === destination.id ? 'Cancel' : 'Drop your opinion'}
           </button>
         </div>
       ))}
@@ -85,5 +81,8 @@ const DestinationsList = () => {
 };
 
 export default DestinationsList;
+
+
+
 
 

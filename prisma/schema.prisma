@@ -20,13 +20,10 @@ model Destination {
 }
 
 model Comment {
-  id            Int      @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
   destinationId Int
   comment       String
   name          String
-  userId        Int?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
   destination   Destination @relation(fields: [destinationId], references: [id])
 }
 

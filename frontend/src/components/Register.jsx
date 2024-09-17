@@ -1,4 +1,6 @@
 // components/Register.jsx
+
+// register works . it prompts to home and destination , it also shows log out 
 import React, { useState } from 'react';
 import { useRegisterMutation } from '../redux/api';
 
