@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
-import { useAddReviewMutation } from '../redux/api'; // Adjust the import path as necessary
+import { useAddReviewMutation } from '../redux/api';
 
-const locations = [
-  "New York, USA",
-  "London, UK",
-  "Tokyo, Japan",
-  "Sydney, Australia",
-  "Paris, France",
-  // Add more locations as needed
-];
-
-const DropIt = () => {
+const DropIt = ({ destinationId }) => { // Get destinationId as a prop
   const [review, setReview] = useState('');
   const [image, setImage] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -39,23 +30,20 @@ const DropIt = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Create a FormData object to handle file upload
     const formData = new FormData();
     formData.append('review', review);
     formData.append('location', selectedLocation);
     if (image) {
-      formData.append('image', image);
+      formData.append('image', image); // Make sure to adjust the backend if needed
     }
 
     try {
-      // Assuming addReview accepts a FormData object
-      await addReview(formData).unwrap();
+      await addReview({ destinationId, review, picture: image }).unwrap();
       setReview('');
       setImage(null);
       setSelectedLocation('');
     } catch (error) {
       console.error('Failed to add review:', error);
-      // Handle error
     }
   };
 
@@ -111,3 +99,4 @@ const DropIt = () => {
 };
 
 export default DropIt;
+

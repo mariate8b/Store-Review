@@ -34,17 +34,27 @@ const authenticateToken = (req, res, next) => {
 // Register endpoint
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
+  
   try {
+    // Check if the user already exists
+    const existingUser = await prisma.user.findUnique({ where: { username } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Username already exists' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
       data: { username, password: hashedPassword },
     });
+
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
     res.status(201).json({ token, userId: user.id });
   } catch (error) {
+    console.error('Registration error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 app.get('/api/destinations', async (req, res) => {
   try {
     const destinations = await prisma.destination.findMany();
@@ -84,7 +94,23 @@ app.post('/api/login', async (req, res) => {
 
 
 // Ensure you have the correct route for adding comments
+app.get('/api/destinations/:destinationId/comments', async (req, res) => {
+  const { destinationId } = req.params;
+
+  try {
+    const comments = await prisma.comment.findMany({
+      where: { destinationId: parseInt(destinationId) }, // Ensure the ID is an integer
+    });
+    res.status(200).json(comments);
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.post('/api/destinations/:destinationId/comments', authenticateToken, async (req, res) => {
+  console.log(`Received comment for destinationId: ${req.params.destinationId}`);
+  
   const { destinationId } = req.params;
   const { comment, name } = req.body;
 
@@ -104,56 +130,27 @@ app.post('/api/destinations/:destinationId/comments', authenticateToken, async (
 });
 
 
-
-
-
 // Create review endpoint
-app.post('/api/reviews', authenticateToken, async (req, res) => {
-  const { destinationId, review, picture } = req.body;
+app.post('/api/destinations/:destinationId/reviews', authenticateToken, async (req, res) => {
+  const { destinationId } = req.params;
+  const { review, picture } = req.body; // Assuming picture is being sent as a string (URL)
+
   try {
-    const reviewData = await prisma.review.create({
+    const newReview = await prisma.review.create({
       data: {
-        destinationId,
+        destinationId: parseInt(destinationId), // Ensure destinationId is an integer
         review,
-        picture,
-        userId: req.user.userId,
+        picture, // Adjust based on how you're handling images
+        userId: req.user.userId, // Assuming userId is stored in the token
       },
     });
-    res.status(201).json(reviewData);
+    res.status(201).json(newReview);
   } catch (error) {
+    console.error('Error adding review:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// Get all reviews endpoint
-app.get('/api/reviews', async (req, res) => {
-  try {
-    const reviews = await prisma.review.findMany({
-      include: { user: true, destination: true },
-    });
-    res.json(reviews);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-// Backend (Express) - Ensure you have an endpoint for adding comments
-app.post('/api/reviews/:reviewId/comments', authenticateToken, async (req, res) => {
-  const { reviewId } = req.params;
-  const { comment } = req.body;
-
-  try {
-    const newComment = await prisma.comment.create({
-      data: {
-        reviewId,
-        comment,
-        userId: req.user.userId,
-      },
-    });
-    res.status(201).json(newComment);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 
 // Logout endpoint

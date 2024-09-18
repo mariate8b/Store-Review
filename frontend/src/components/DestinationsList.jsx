@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGetDestinationsQuery, useAddCommentMutation } from '../redux/api';
+import { useGetDestinationsQuery, useAddCommentMutation, useGetCommentsQuery } from '../redux/api';
 
 const DestinationsList = () => {
   const { data: destinations = [], error, isLoading } = useGetDestinationsQuery();
@@ -7,6 +7,11 @@ const DestinationsList = () => {
   const [comment, setComment] = useState('');
   const [name, setName] = useState('');
   const [addComment, { isLoading: isCommentLoading, error: commentError }] = useAddCommentMutation();
+
+  // Fetch comments for the selected destination
+  const { data: comments = [], isLoading: isCommentsLoading } = useGetCommentsQuery(selectedDestinationId, {
+    skip: !selectedDestinationId, // Skip if no destination is selected
+  });
 
   const handleAddComment = async (destinationId) => {
     if (!name) {
@@ -32,19 +37,25 @@ const DestinationsList = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className = "DestinationList">
+    <div className="DestinationList">
       <h1>Destinations List</h1>
       {destinations.map((destination) => (
         <div key={destination.id} style={{ marginBottom: '20px' }}>
-          
           <h2>{destination.name}</h2>
           {destination.picture && <img src={destination.picture} alt={destination.name} style={{ width: '300px', height: '200px' }} />}
           <p>{destination.review}</p>
 
-          
           <div>
             <h3>Comments:</h3>
-            
+            {isCommentsLoading ? (
+              <p>Loading comments...</p>
+            ) : (
+              comments.map(comment => (
+                <div key={comment.id}>
+                  <p><strong>{comment.name}:</strong> {comment.comment}</p>
+                </div>
+              ))
+            )}
           </div>
 
           {/* Comment Input */}
@@ -81,6 +92,8 @@ const DestinationsList = () => {
 };
 
 export default DestinationsList;
+
+
 
 
 

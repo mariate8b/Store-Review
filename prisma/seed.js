@@ -4,67 +4,93 @@ const bcrypt = require('bcrypt');
 
 const main = async () => {
   try {
-    // Clear existing data
-    await prisma.comment.deleteMany({});
-    await prisma.destination.deleteMany({});
-    await prisma.user.deleteMany({});
-
-    // Create destinations
-    const destinations = await prisma.destination.createMany({
-      data: [
-        {
-          id: 1,
-          name: 'Ibiza, Spain',
-          review: 'Ibiza Town is the capital of Ibiza, one of Spain\'s Balearic Islands in the Mediterranean Sea. It\'s known for its lively nightlife scene, and many European nightclubs have summer outposts here. South of the center, Ses Figueretes and Platja d\'en Bossa are white-sand beaches. Above the harbor is the old quarter of Dalt Vila, with the Gothic-style Catedral de Santa María and views from Renaissance-era fortifications.',
-          picture: '' // No picture URL provided
-        },
-        {
-          id: 2,
-          name: 'Antigua, Guatemala',
-          review: 'Antigua Guatemala is a city in Guatemala that some say is beautiful, colorful, and peaceful. It\'s known for its rich history, religious festivals, and lively culture. Some say it\'s a great place to start when traveling to Guatemala. Here are some things to know about Antigua Guatemala.',
-          picture: '' // No picture URL provided
-        },
-        {
-          id: 4,
-          name: 'Tokyo, Japan',
-          review: 'Tokyo, Japan’s busy capital, mixes the ultramodern and the traditional, from neon-lit skyscrapers to historic temples. The opulent Meiji Shinto Shrine is known for its towering gate and surrounding woods. The Imperial Palace sits amid large public gardens. The city\'s many museums offer exhibits ranging from classical art (in the Tokyo National Museum) to a reconstructed kabuki theater (in the Edo-Tokyo Museum).',
-          picture: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt_Ux1WF34znI7ysn8ZHlWiZTC0y-WvQCi-w&s'
-        }
-      ]
-    });
-    console.log('Destinations created:', destinations);
-
-    // Create example user
-    const hashedPassword = await bcrypt.hash('plainPassword', 10);
-    const user = await prisma.user.create({
-      data: {
-        username: 'sampleuser',
-        password: hashedPassword,
+    // Update existing destinations or create new ones
+    const destinationsData = [
+      {
+        id: 1,
+        name: 'Ibiza, Spain',
+        review: 'Ibiza Town is the capital of Ibiza, one of Spain\'s Balearic Islands in the Mediterranean Sea. It\'s known for its lively nightlife scene.',
+        picture: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/10/2e/a4/ibiza.jpg?w=1400&h=1400&s=1'
       },
-    });
-    console.log('User created:', user);
+      {
+        id: 2,
+        name: 'Antigua, Guatemala',
+        review: 'Antigua Guatemala is a city in Guatemala that some say is beautiful, colorful, and peaceful.',
+        picture: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Santa_Catalina_Arch_-_Antigua_Guatemala_Feb_2020.jpg/640px-Santa_Catalina_Arch_-_Antigua_Guatemala_Feb_2020.jpg'
+      },
+      {
+        id: 4,
+        name: 'Tokyo, Japan',
+        review: 'Tokyo, Japan’s busy capital, mixes the ultramodern and the traditional, from neon-lit skyscrapers to historic temples.',
+        picture: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt_Ux1WF34znI7ysn8ZHlWiZTC0y-WvQCi-w&s'
+      },
+      {
+        id: 5,
+        name: 'Londres, England',
+        review: 'Whilst a bit pricey, visiting London was the most amazing experience I have had to date! I recommend it to anyone from the US - we speak the same language, so its extremely easy to "get your feet wet" ,',
+        picture: 'https://www.puravidaglobaltravel.com/wp-content/uploads/2024/06/raves-ten-days-in-london-england-pura-vida-global-travel-01.jpg'
+      }
+    ];
 
-    // Create sample comments
-    const comments = await prisma.comment.createMany({
-      data: [
-        {
-          destinationId: 1, // Ibiza, Spain
-          comment: 'I love the nightlife in Ibiza! The beaches are fantastic too.',
-          name: 'Alice',
-        },
-        {
-          destinationId: 2, // Antigua, Guatemala
-          comment: 'Antigua is so beautiful and full of history. A must-visit!',
-          name: 'Bob',
-        },
-        {
-          destinationId: 4, // Tokyo, Japan
-          comment: 'Tokyo is an incredible mix of modern and traditional. Highly recommend visiting.',
-          name: 'Charlie',
-        }
-      ]
+    for (const destination of destinationsData) {
+      await prisma.destination.upsert({
+        where: { id: destination.id },
+        update: destination,
+        create: destination,
+      });
+    }
+
+    console.log('Destinations updated or created.');
+
+    // Update existing user or create new
+    const hashedPassword = await bcrypt.hash('plainPassword', 10);
+    const user = await prisma.user.upsert({
+      where: { username: 'sampleuser' },
+      update: { password: hashedPassword },
+      create: { username: 'sampleuser', password: hashedPassword },
     });
-    console.log('Comments created:', comments);
+    console.log('User updated or created:', user);
+
+    // Update existing comments or create new ones
+    const commentsData = [
+      {
+        destinationId: 1,
+        comment: "I love the nightlife in Ibiza! The beaches are fantastic too.",
+        name: "Alice",
+      },
+      {
+        destinationId: 2,
+        comment: "Antigua is so beautiful and full of history. A must-visit!",
+        name: "Bob",
+      },
+      {
+        destinationId: 4,
+        comment: "Tokyo is an incredible mix of modern and traditional. Highly recommend visiting.",
+        name: "Charlie",
+      }
+    ];
+    
+    for (const comment of commentsData) {
+      await prisma.comment.upsert({
+        where: {
+          destinationId_name: {
+            destinationId: comment.destinationId,
+            name: comment.name,
+          },
+        },
+        update: {
+          comment: comment.comment,
+          name: comment.name,
+        },
+        create: {
+          destinationId: comment.destinationId,
+          comment: comment.comment,
+          name: comment.name,
+        },
+      });
+    }
+    
+    console.log('Comments updated or created.');
 
     console.log('Seeding completed!');
   } catch (e) {

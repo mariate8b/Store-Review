@@ -3,46 +3,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 generator client {
   provider = "prisma-client-js"
 }
 
 model Destination {
-  id          Int      @id @default(autoincrement())
-  name        String
-  picture     String
-  review      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  comments    Comment[]
-  reviews     Review[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  review    String
+  picture   String?
+  comments  Comment[] @relation("DestinationComments")
+  reviews   Review[]
+  updatedAt DateTime  @updatedAt
 }
 
 model Comment {
-  id            Int        @id @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   destinationId Int
   comment       String
   name          String
-  destination   Destination @relation(fields: [destinationId], references: [id])
+  destination   Destination @relation("DestinationComments", fields: [destinationId], references: [id])
+
+  @@unique([destinationId, name]) // Composite unique constraint
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
+  id       Int      @id @default(autoincrement())
+  username String   @unique
   password String
   reviews  Review[]
 }
 
+
 model Review {
-  id             Int       @id @default(autoincrement())
-  destinationId  Int
-  review         String
-  rating         Int       // Ensure this field exists
-  picture        String
-  userId         Int
-  destination    Destination @relation(fields: [destinationId], references: [id])
-  user           User        @relation(fields: [userId], references: [id])
+  id            Int         @id @default(autoincrement())
+  destinationId Int
+  review        String
+  rating        Int // Ensure this field exists
+  picture       String
+  userId        Int
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  user          User        @relation(fields: [userId], references: [id])
 }
-
-

@@ -2,6 +2,8 @@
 
 //NOTES IMPORTANT //
 // thedestination destination is already fetching , it needs unique locations with rating for none users with the option of r
+
+
 import React from 'react';
 import { useGetDestinationsQuery } from '../redux/api';
 
@@ -12,7 +14,7 @@ const Home = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className = "destinationsHome">
+    <div className="destinationsHome">
       <h1>Destinations</h1>
       {destinations.length === 0 ? (
         <p>No destinations available.</p>
@@ -22,15 +24,22 @@ const Home = () => {
             <h2>{destination.name}</h2>
             <img src={destination.picture} alt={destination.name} style={{ width: '300px', height: '200px' }} />
             <p>{destination.review}</p>
-            <button>See comments</button>
+            <a href="http://localhost:5173/login">
+              <button>See comments</button>
+              <p>
+        Don't have an account? <a href="http://localhost:5173/register">Sign up</a>
+      </p>
+            </a>
           </div>
         ))
       )}
+     
     </div>
   );
 };
 
 export default Home;
+
 
 
 
